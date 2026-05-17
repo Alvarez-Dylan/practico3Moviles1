@@ -120,7 +120,7 @@ fun TaskCard(
                         // Mostrar primeras 3 etiquetas
                         visibleLabels.forEach { LabelChip(etiquetas = it) }
 
-                        // Mostrar botón +N si hay más etiquetas
+                        // Mostrar botón
                         if (hiddenLabels.isNotEmpty()) {
                             Box {
                                 // Botón +N
@@ -151,7 +151,7 @@ fun TaskCard(
                                     }
                                 }
 
-                                // Dropdown menu con las etiquetas ocultas
+                                // Dropdown menu etiquetas ocultas
                                 DropdownMenu(
                                     expanded = expanded,
                                     onDismissRequest = { expanded = false },

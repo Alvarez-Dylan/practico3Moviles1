@@ -233,7 +233,7 @@ fun TaskDetailScreen(
                                     )
                                     if (isOverdue) {
                                         Text(
-                                            text = "⚠️ Tarea vencida",
+                                            text = " Tarea vencida",
                                             style = MaterialTheme.typography.bodySmall,
                                             color = MaterialTheme.colorScheme.error
                                         )

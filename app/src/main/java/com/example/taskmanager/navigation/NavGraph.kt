@@ -58,7 +58,7 @@ fun NavGraph(
             )
         }
 
-        // Pantalla de detalle de tarea (NUEVA)
+        // Pantalla de detalle de tarea
         composable(
             route = "task_detail/{taskId}",
             arguments = listOf(

@@ -24,11 +24,10 @@ class HomeViewModel(
     private var filterPriority: Priority? = null
     private var filterLabelId: Int? = null
     private var sortOrder = SortOrder.CREATED_DESC
+    private var todasLasTareas: List<TaskWithLabels> = emptyList()
     private var etiquetasList: List<Etiquetas> = emptyList()
 
     init {
-        actualizarListaDeTareas()
-        // Cargar las etiquetas al iniciar
         viewModelScope.launch {
             labelRepository.getAllLabels().collect { listaDeEtiquetas ->
                 etiquetasList = listaDeEtiquetas
@@ -36,38 +35,52 @@ class HomeViewModel(
             }
         }
 
-    }
-
-    // Función principal que actualiza la lista según los filtros actuales
-    private fun actualizarListaDeTareas() {
-        val tareasFlow = when {
-            searchQuery.isNotBlank() -> taskRepository.searchTasks(searchQuery)
-            filterStatus != null -> taskRepository.getTasksByStatus(filterStatus!!)
-            filterPriority != null -> taskRepository.getTasksByPriority(filterPriority!!)
-            filterLabelId != null -> taskRepository.getTasksByLabel(filterLabelId!!)
-            else -> taskRepository.getAllTasks()
-        }
         viewModelScope.launch {
-            // Obtener los resultados y ordenar
-            tareasFlow.collect { listaOriginal ->
-                val listaOrdenada = ordenarTareas(listaOriginal, sortOrder)
-
-                _state.update { estadoActual ->
-                    estadoActual.copy(
-                        tasks = listaOrdenada,
-                        etiquetas = etiquetasList,
-                        searchQuery = searchQuery,
-                        filterStatus = filterStatus,
-                        filterPriority = filterPriority,
-                        filterLabelId = filterLabelId,
-                        sortOrder = sortOrder
-                    )
-                }
+            taskRepository.getAllTasks().collect { listaDesdeRoom ->
+                todasLasTareas = listaDesdeRoom
+                actualizarListaDeTareas()
             }
         }
     }
 
-    // Ordena la lista según el criterio seleccionado
+    private fun actualizarListaDeTareas() {
+        var listaFiltrada = todasLasTareas
+
+        if (searchQuery.isNotBlank()) {
+            listaFiltrada = listaFiltrada.filter {
+                it.tareas.title.contains(searchQuery, ignoreCase = true)
+            }
+        }
+
+        if (filterStatus != null) {
+            listaFiltrada = listaFiltrada.filter { it.tareas.status == filterStatus }
+        }
+
+        if (filterPriority != null) {
+            listaFiltrada = listaFiltrada.filter { it.tareas.priority == filterPriority }
+        }
+
+        if (filterLabelId != null) {
+            listaFiltrada = listaFiltrada.filter { relacion ->
+                relacion.etiquetas.any { etiqueta -> etiqueta.id == filterLabelId }
+            }
+        }
+
+        val listaOrdenada = ordenarTareas(listaFiltrada, sortOrder)
+
+        _state.update { estadoActual ->
+            estadoActual.copy(
+                tasks = listaOrdenada,
+                etiquetas = etiquetasList,
+                searchQuery = searchQuery,
+                filterStatus = filterStatus,
+                filterPriority = filterPriority,
+                filterLabelId = filterLabelId,
+                sortOrder = sortOrder
+            )
+        }
+    }
+
     private fun ordenarTareas(tareas: List<TaskWithLabels>, orden: SortOrder): List<TaskWithLabels> {
         return when (orden) {
             SortOrder.CREATED_DESC -> tareas.sortedByDescending { it.tareas.createdAt }
@@ -77,14 +90,9 @@ class HomeViewModel(
             SortOrder.TITLE -> tareas.sortedBy { it.tareas.title.lowercase() }
         }
     }
+
     fun onSearchQueryChange(query: String) {
         searchQuery = query
-        _state.update { estadoActual ->
-            estadoActual.copy(
-                searchQuery = query,
-                tasks = estadoActual.tasks
-            )
-        }
         filterStatus = null
         filterPriority = null
         filterLabelId = null
@@ -120,23 +128,16 @@ class HomeViewModel(
         actualizarListaDeTareas()
     }
 
-    // Cambiar estado de una tarea (pendiente ↔ completada)
     fun onToggleTaskStatus(tarea: Tareas) {
-        val nuevoEstado = if (tarea.status == Status.PENDING) {
-            Status.COMPLETED
-        } else {
-            Status.PENDING
-        }
         viewModelScope.launch {
+            val nuevoEstado = if (tarea.status == Status.PENDING) Status.COMPLETED else Status.PENDING
             taskRepository.updateTask(tarea.copy(status = nuevoEstado))
-            actualizarListaDeTareas()
         }
     }
 
     fun onDeleteTask(tarea: Tareas) {
         viewModelScope.launch {
             taskRepository.deleteTask(tarea)
-            actualizarListaDeTareas()
         }
     }
 }
