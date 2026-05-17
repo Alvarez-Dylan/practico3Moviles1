@@ -23,8 +23,9 @@ import com.example.taskmanager.ui.viewmodels.TaskDetailViewModel
 import com.example.taskmanager.ui.viewmodels.TaskDetailViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.compose.foundation.layout.FlowRow
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun TaskDetailScreen(
     application: TaskManagerApplication,
@@ -280,9 +281,10 @@ fun TaskDetailScreen(
                                         style = MaterialTheme.typography.labelMedium,
                                         color = MaterialTheme.colorScheme.primary
                                     )
-                                    Row(
+                                    FlowRow(
+                                        modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                        verticalAlignment = Alignment.CenterVertically
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
                                     ) {
                                         state.taskWithLabels!!.etiquetas.forEach { etiqueta ->
                                             LabelChip(etiquetas = etiqueta)

@@ -146,7 +146,8 @@ fun TaskFormScreen(
                     FilterChip(
                         selected = state.status == estadoActual,
                         onClick = { vm.onStatusChange(estadoActual) },
-                        label = { Text(label) }
+                        label = { Text(label) },
+                        enabled = estadoActual == Status.PENDING || taskId != null
                     )
                 }
             }
