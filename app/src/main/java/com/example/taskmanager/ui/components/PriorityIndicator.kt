@@ -30,12 +30,12 @@ fun PriorityIndicator(priority: Priority, modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Box(
+        /*Box(
             modifier = Modifier
                 .size(8.dp)
                 .clip(RoundedCornerShape(50))
                 .background(color)
-        )
+        )*/
         Text(text = label, style = MaterialTheme.typography.labelSmall, color = color)
     }
 }

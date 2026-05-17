@@ -27,7 +27,8 @@ import com.example.taskmanager.ui.viewmodels.HomeViewModelFactory
 fun HomeScreen(
     application: TaskManagerApplication,
     onNavigateToForm: (Int?) -> Unit,
-    onNavigateToLabels: () -> Unit
+    onNavigateToLabels: () -> Unit,
+    onNavigateToDetail: (Int) -> Unit
 ) {
 
     val vm: HomeViewModel = viewModel(
@@ -191,7 +192,8 @@ fun HomeScreen(
                             taskWithLabels = taskWithLabels,
                             onToggleStatus = { vm.onToggleTaskStatus(taskWithLabels.tareas) },
                             onEdit = { onNavigateToForm(taskWithLabels.tareas.id) },
-                            onDelete = { showDeleteDialog = taskWithLabels.tareas }
+                            onDelete = { showDeleteDialog = taskWithLabels.tareas },
+                            onViewDetail = { onNavigateToDetail(taskWithLabels.tareas.id) }
                         )
                     }
                     item { Spacer(Modifier.height(80.dp)) }

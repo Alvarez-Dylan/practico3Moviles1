@@ -40,15 +40,14 @@ class HomeViewModel(
 
     // Función principal que actualiza la lista según los filtros actuales
     private fun actualizarListaDeTareas() {
+        val tareasFlow = when {
+            searchQuery.isNotBlank() -> taskRepository.searchTasks(searchQuery)
+            filterStatus != null -> taskRepository.getTasksByStatus(filterStatus!!)
+            filterPriority != null -> taskRepository.getTasksByPriority(filterPriority!!)
+            filterLabelId != null -> taskRepository.getTasksByLabel(filterLabelId!!)
+            else -> taskRepository.getAllTasks()
+        }
         viewModelScope.launch {
-            val tareasFlow = when {
-                searchQuery.isNotBlank() -> taskRepository.searchTasks(searchQuery)
-                filterStatus != null -> taskRepository.getTasksByStatus(filterStatus!!)
-                filterPriority != null -> taskRepository.getTasksByPriority(filterPriority!!)
-                filterLabelId != null -> taskRepository.getTasksByLabel(filterLabelId!!)
-                else -> taskRepository.getAllTasks()
-            }
-
             // Obtener los resultados y ordenar
             tareasFlow.collect { listaOriginal ->
                 val listaOrdenada = ordenarTareas(listaOriginal, sortOrder)
@@ -123,12 +122,12 @@ class HomeViewModel(
 
     // Cambiar estado de una tarea (pendiente ↔ completada)
     fun onToggleTaskStatus(tarea: Tareas) {
+        val nuevoEstado = if (tarea.status == Status.PENDING) {
+            Status.COMPLETED
+        } else {
+            Status.PENDING
+        }
         viewModelScope.launch {
-            val nuevoEstado = if (tarea.status == Status.PENDING) {
-                Status.COMPLETED
-            } else {
-                Status.PENDING
-            }
             taskRepository.updateTask(tarea.copy(status = nuevoEstado))
             actualizarListaDeTareas()
         }

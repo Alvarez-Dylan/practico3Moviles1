@@ -28,6 +28,7 @@ fun TaskCard(
     onToggleStatus: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
+    onViewDetail: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val task = taskWithLabels.tareas
@@ -65,6 +66,7 @@ fun TaskCard(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 4.dp)
+                    .clickable { onViewDetail() }
             ) {
                 Text(
                     text = task.title,
@@ -93,6 +95,7 @@ fun TaskCard(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
                     PriorityIndicator(priority = task.priority)
 
                     task.dueDate?.let { dueDate ->

@@ -47,16 +47,22 @@ class TaskFormViewModel(
         }
     }
 
-    fun onTitleChange(title: String) = _state.update { it.copy(title = title, titleError = null) }
-    fun onDescriptionChange(desc: String) = _state.update { it.copy(description = desc) }
-    fun onDueDateChange(date: Long?) = _state.update { it.copy(dueDate = date) }
-    fun onPriorityChange(priority: Priority) = _state.update { it.copy(priority = priority) }
-    fun onStatusChange(status: Status) = _state.update { it.copy(status = status) }
+    fun onTitleChange(title: String) =
+        _state.update { it.copy(title = title, titleError = null) }
+    fun onDescriptionChange(desc: String) =
+        _state.update { it.copy(description = desc) }
+    fun onDueDateChange(date: Long?) =
+        _state.update { it.copy(dueDate = date) }
+    fun onPriorityChange(priority: Priority) =
+        _state.update { it.copy(priority = priority) }
+    fun onStatusChange(status: Status) =
+        _state.update { it.copy(status = status) }
 
     fun onLabelToggle(labelId: Int) {
         val current = _state.value.selectedLabelIds
         _state.update {
-            it.copy(selectedLabelIds = if (current.contains(labelId)) current - labelId else current + labelId)
+            it.copy(selectedLabelIds =
+                if (current.contains(labelId)) current - labelId else current + labelId)
         }
     }
 
