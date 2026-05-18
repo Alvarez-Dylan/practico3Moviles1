@@ -62,7 +62,10 @@ class TaskFormViewModel(
         val current = _state.value.selectedLabelIds
         _state.update {
             it.copy(selectedLabelIds =
-                if (current.contains(labelId)) current - labelId else current + labelId)
+                if (current.contains(labelId))
+                    current - labelId
+                else
+                    current + labelId)
         }
     }
 

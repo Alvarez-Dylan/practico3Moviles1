@@ -95,12 +95,12 @@ fun HomeScreen(
                     DropdownMenu(expanded = showFilterMenu, onDismissRequest = { showFilterMenu = false }) {
                         Text("  Filtrar por estado", style = MaterialTheme.typography.labelSmall,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp))
-                        listOf(null to "Todos", Status.PENDING to "Pendiente", Status.COMPLETED to "Completada").forEach { (s, label) ->
+                        listOf(null to "Todos", Status.PENDING to "Pendiente", Status.COMPLETED to "Completada").forEach { (estado, label) ->
                             DropdownMenuItem(
                                 text = { Text(label) },
-                                onClick = { vm.onFilterStatus(s); showFilterMenu = false },
+                                onClick = { vm.onFilterStatus(estado); showFilterMenu = false },
                                 leadingIcon = {
-                                    if (state.filterStatus == s) Icon(Icons.Default.Check, null, Modifier.size(16.dp))
+                                    if (state.filterStatus == estado) Icon(Icons.Default.Check, null, Modifier.size(16.dp))
                                     else Spacer(Modifier.size(16.dp))
                                 }
                             )
@@ -108,12 +108,12 @@ fun HomeScreen(
                         HorizontalDivider()
                         Text("  Filtrar por prioridad", style = MaterialTheme.typography.labelSmall,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp))
-                        listOf(null to "Todas", Priority.HIGH to "Alta", Priority.MEDIUM to "Media", Priority.LOW to "Baja").forEach { (p, label) ->
+                        listOf(null to "Todas", Priority.HIGH to "Alta", Priority.MEDIUM to "Media", Priority.LOW to "Baja").forEach { (priority, label) ->
                             DropdownMenuItem(
                                 text = { Text(label) },
-                                onClick = { vm.onFilterPriority(p); showFilterMenu = false },
+                                onClick = { vm.onFilterPriority(priority); showFilterMenu = false },
                                 leadingIcon = {
-                                    if (state.filterPriority == p) Icon(Icons.Default.Check, null, Modifier.size(16.dp))
+                                    if (state.filterPriority == priority) Icon(Icons.Default.Check, null, Modifier.size(16.dp))
                                     else Spacer(Modifier.size(16.dp))
                                 }
                             )

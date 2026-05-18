@@ -23,16 +23,34 @@ class LabelsViewModel(private val labelRepository: LabelRepository) : ViewModel(
     }
 
     fun onShowAddDialog() =
-        _state.update { it.copy(showAddDialog = true, editingEtiquetas = null, newLabelName = "", newLabelColor = "#6200EE") }
-
+        _state.update { it.copy(
+            showAddDialog = true,
+            editingEtiquetas = null,
+            newLabelName = "",
+            newLabelColor = "#6200EE")
+        }
     fun onShowEditDialog(etiquetas: Etiquetas) =
-        _state.update { it.copy(showAddDialog = true, editingEtiquetas = etiquetas, newLabelName = etiquetas.name, newLabelColor = etiquetas.color) }
-
+        _state.update { it.copy(
+            showAddDialog = true,
+            editingEtiquetas = etiquetas,
+            newLabelName = etiquetas.name,
+            newLabelColor = etiquetas.color)
+        }
     fun onDismissDialog() =
-        _state.update { it.copy(showAddDialog = false, editingEtiquetas = null, newLabelName = "", newLabelColor = "#6200EE", labelNameError = null) }
-
-    fun onLabelNameChange(name: String) = _state.update { it.copy(newLabelName = name, labelNameError = null) }
-    fun onLabelColorChange(color: String) = _state.update { it.copy(newLabelColor = color) }
+        _state.update { it.copy(
+            showAddDialog = false,
+            editingEtiquetas = null,
+            newLabelName = "",
+            newLabelColor = "#6200EE",
+            labelNameError = null)
+        }
+    fun onLabelNameChange(name: String) =
+        _state.update { it.copy(
+            newLabelName = name,
+            labelNameError = null)
+        }
+    fun onLabelColorChange(color: String) =
+        _state.update { it.copy(newLabelColor = color) }
 
     fun saveLabel() {
         val estadoActual = _state.value
@@ -41,15 +59,22 @@ class LabelsViewModel(private val labelRepository: LabelRepository) : ViewModel(
             return
         }
         viewModelScope.launch {
-            val etiquetas = Etiquetas(id = estadoActual.editingEtiquetas?.id ?: 0, name = estadoActual.newLabelName.trim(), color = estadoActual.newLabelColor)
-            if (estadoActual.editingEtiquetas == null) labelRepository.insertLabel(etiquetas)
+            val etiquetas = Etiquetas(
+                id = estadoActual.editingEtiquetas?.id ?: 0,
+                name = estadoActual.newLabelName.trim(),
+                color = estadoActual.newLabelColor)
+
+            if (estadoActual.editingEtiquetas == null)
+                labelRepository.insertLabel(etiquetas)
             else labelRepository.updateLabel(etiquetas)
             onDismissDialog()
         }
     }
 
     fun deleteLabel(etiquetas: Etiquetas) {
-        viewModelScope.launch { labelRepository.deleteLabel(etiquetas) }
+        viewModelScope.launch {
+            labelRepository.deleteLabel(etiquetas)
+        }
     }
 }
 

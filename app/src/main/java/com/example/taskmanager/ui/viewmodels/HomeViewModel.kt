@@ -130,7 +130,11 @@ class HomeViewModel(
 
     fun onToggleTaskStatus(tarea: Tareas) {
         viewModelScope.launch {
-            val nuevoEstado = if (tarea.status == Status.PENDING) Status.COMPLETED else Status.PENDING
+            val nuevoEstado = if (tarea.status == Status.PENDING)
+                                    Status.COMPLETED
+                               else
+                                    Status.PENDING
+
             taskRepository.updateTask(tarea.copy(status = nuevoEstado))
         }
     }
